@@ -59,4 +59,10 @@ X_test= X_test[:,0:2000]
 
 
 theta_emv = descenso_gradiente(X_train, y_train) 
-print "theta_emv = ", theta_emv.T
+print "theta_emv = ", theta_emv.Tt 
+
+
+print ("Se ca a caluclar el valor para MSE")
+
+y_entrenamiento_predicha = logistica(np.dot(X_train, theta_emv))
+print "MSE entrenamiento = ", np.square(y_entrenamiento - y_entrenamiento_predicha).mean()
