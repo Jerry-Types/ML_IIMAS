@@ -1,12 +1,15 @@
+#!/user/bin/python
+
 import random
 import numpy as np
+import matplotlib.pyplot as plt
+import itertools
+
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.externals import joblib
+from sklearn.metrics import accuracy_score, confusion_matrix
 import tqdm
 
-def batches(l, n):
-    for i in xrange(0, len(l), n):
-        yield l[i:i+n]
 
 
 data_bf = joblib.load("bolsas_caracteristicas.pkl", mmap_mode='c')
@@ -15,33 +18,51 @@ y_train = data_bf[1]
 X_test = data_bf[2]
 y_test = data_bf[3]
 
-print X_train.shape
-print X_train[0:2].shape
-bs=range(1,1500+1,50)
 
 clf = MultinomialNB()
-#print ("The shapes")
-#print (X_train[0:10].shape,y_train[0:10].shape)
-#clf.partial_fit(X_train[0:10],y_train[0:10],np.unique(y_train))
 clf.fit(X_train,y_train)
-#print y_train[1]
-#for i in range(len(bs)-1):
-    #print X_train[bs[i]:bs[i+1]].shape,y_train[bs[i]:bs[i+1]].shape
-    #print "Jajaj"
- #   print i
-  #  clf.partial_fit(X_train[bs[i]:bs[i+1]],y_train[bs[i]:bs[i+1]],np.unique(y_train))
-    #break
-#clf = MultinomialNB()
-#clf.partial_fit(X_train,y_train,np.unique(y_train))
-print clf.predict(X_train)
+y_hat = clf.predict(X_train)
+print y_hat
 
-"""
-shuffledRange = range((X_train.shape[0]))
-n_iter = 10
-for n in range(n_iter):
-    random.shuffle(shuffledRange)
-    shuffledX = [X_train[i] for i in shuffledRange]
-    shuffledY = [y_train[i] for i in shuffledRange]
-    for batch in batches(range(len(shuffledX)), 10000):
-        clf.partial_fit(shuffledX[batch[0]:batch[-1]+1], shuffledY[batch[0]:batch[-1]+1], np.unique(y_train))
-"""
+print accuracy_score(y_train,y_hat)
+
+def plot_confusion_matrix(cm, classes,
+                          normalize=False,
+                          title='Confusion matrix',
+                          cmap=plt.cm.Blues):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
+
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+
+    print(cm)
+
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i, j],
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
+
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
+
+cnf_matrix = confusion_matrix(y_train, y_hat)
+np.set_printoptions(precision=2)
+plt.figure()
+plot_confusion_matrix(cnf_matrix, classes=np.unique(y_train),
+                      title='Confusion matrix, without normalization')
+plt.show()
