@@ -1,0 +1,26 @@
+#!/usr/bin/python
+from zipfile import ZipFile
+import os
+import sys
+import io
+import tqdm
+import numpy as np
+from sklearn.decomposition import IncrementalPCA
+from sklearn.externals import joblib
+
+def pca_apply_sift(inputpath,n_comp):
+    print ("===The PCA process has started===")
+    print (".....")
+    ipca_p = IncrementalPCA(n_components=n_comp)
+    with ZipFile(inputpath) as imagedb:
+        for entry in (imagedb.infolist()):
+                if entry.filename.startswith('data_tarea/') and entry.filename.endswith('.npy'):
+                    #print (entry.filename)
+                    with io.BufferedReader(imagedb.open(entry)) as file:
+                        X = np.load(file)
+                        ipca_p.partial_fit(X)
+    print ("===The PCA process is over===")
+    return ipca_p
+
+pca_sift=pca_apply_sift(inputpath="imagedb.zip",n_comp=64)
+joblib.dump(pca_sift, 'pca_sift.pkl') 
