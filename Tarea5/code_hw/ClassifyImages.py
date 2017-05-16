@@ -45,10 +45,10 @@ def construct_vocabulary_sift(inputpath, number_of_iterations,name_vocabulary,pc
         for i in tqdm.trange(number_of_iterations):
             for entry in imagedb.infolist():
                 if entry.filename.startswith('data_tarea/train/') and entry.filename.endswith('.npy'):
-                    print (entry.filename)
+                    #print (entry.filename)
                     with io.BufferedReader(imagedb.open(entry)) as file:
                         if pca_sift_flag == True:
-                            print "Aplicando PCA"
+                            #print "Aplicando PCA"
                             X = np.load(file)
                             X = pca_sift.transform(X)
                             mkm.partial_fit(X)
