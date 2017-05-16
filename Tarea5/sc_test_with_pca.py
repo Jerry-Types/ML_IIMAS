@@ -25,13 +25,13 @@ def construct_vocabulary_sift(inputpath, number_of_iterations,pca_sift):
     return mkm
 
 def main():
-    name_model = "vocabulario_pca_sif.pkl"
+    name_model = "vocabulario_pca_sift.pkl"
     name_zip = "imagedb.zip"
     if os.path.isfile(name_model):
         #print "The file exist"
         pca_sift = joblib.load('pca_sift.pkl')
         mkm = construct_vocabulary_sift(name_zip,100,pca_sift)
-        joblib.dump(mkm, 'vocabulario_pca_sift.pkl') 
+        joblib.dump(mkm,"vocabulario_pca_sift.pkl") 
     else:
         print "File doesn't exists"
         
