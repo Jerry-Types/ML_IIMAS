@@ -6,6 +6,8 @@ import io
 import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy as sp
+from collections import Counter
 from sklearn.decomposition import IncrementalPCA
 from sklearn.externals import joblib
 from sklearn.cluster import MiniBatchKMeans
@@ -60,7 +62,7 @@ def construct_vocabulary_sift(inputpath, number_of_iterations,name_vocabulary,pc
 
 
 def generate_bag_of_features(inputpath, mkm_name,name_bag):
-    mkm = joblib.load("mkm_name")
+    mkm = joblib.load(mkm_name)
     with ZipFile(inputpath) as imagedb:
         JA_train = []
         A_train = []
