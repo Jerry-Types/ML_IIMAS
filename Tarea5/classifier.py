@@ -12,7 +12,7 @@ import tqdm
 
 
 
-data_bf = joblib.load("bolsas_caracteristicas.pkl", mmap_mode='c')
+data_bf = joblib.load("bolsas_caracteristicas_sin_pca.pkl", mmap_mode='c')
 X_train = data_bf[0]
 y_train = data_bf[1]
 X_test = data_bf[2]
