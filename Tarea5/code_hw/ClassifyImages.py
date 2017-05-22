@@ -41,6 +41,7 @@ def pca_apply_sift(inputpath,n_comp,name_pca):
 def construct_vocabulary_sift(inputpath, number_of_iterations,name_vocabulary,pca_sift_flag,name_pca_sift):
     if pca_sift_flag == True:
         pca_sift = joblib.load(name_pca_sift)
+        print "Load ... pca_sift"
     mkm = MiniBatchKMeans(n_clusters=1000)
     print "Estoy Aqui"
     with ZipFile(inputpath) as imagedb:
