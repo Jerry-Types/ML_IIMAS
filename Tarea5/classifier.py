@@ -18,13 +18,33 @@ y_train = data_bf[1]
 X_test = data_bf[2]
 y_test = data_bf[3]
 
-
+print "###Multinomial###"
+print "===Multinomial Train==="
 clf = MultinomialNB()
 clf.fit(X_train,y_train)
 y_hat = clf.predict(X_train)
-print y_hat
-
+#print y_hat
 print accuracy_score(y_train,y_hat)
+
+print "===Multinomial Test==="
+y_hat_test= clf.predict(X_test)
+print accuracy_score(y_test,y_hat_test)
+
+
+
+print "###SGD###"
+from sklearn.linear_model import SGDClassifier
+print "===SGD Train==="
+clf_svm = SGDClassifier(loss="hinge", penalty="l2")
+clf_svm.fit(X_train, y_train)
+y_hat = clf_svm.predict(X_train)
+print accuracy_score(y_train,y_hat)
+print "===SGD Test==="
+y_hat2= clf_svm.predict(X_test)
+#print y_hat2
+print accuracy_score(y_test,y_hat2)
+
+
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -60,9 +80,9 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted label')
 
 
-cnf_matrix = confusion_matrix(y_train, y_hat)
-np.set_printoptions(precision=2)
-plt.figure()
-plot_confusion_matrix(cnf_matrix, classes=np.unique(y_train),
-                      title='Confusion matrix, without normalization')
-plt.show()
+#cnf_matrix = confusion_matrix(y_train, y_hat)
+#np.set_printoptions(precision=2)
+#plt.figure()
+#plot_confusion_matrix(cnf_matrix, classes=np.unique(y_train),
+#                      title='Confusion matrix, without normalization')
+#plt.show()
