@@ -11,6 +11,8 @@ from collections import Counter
 from sklearn.decomposition import IncrementalPCA
 from sklearn.externals import joblib
 from sklearn.cluster import MiniBatchKMeans
+from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
 
 
 def pca_apply_sift(inputpath,n_comp,name_pca):
@@ -111,5 +113,13 @@ def generate_bag_of_features(inputpath, mkm_name,name_bag,pca_sift_flag,name_pca
                            shape=(len(IA_test) - 1, mkm.cluster_centers_.shape[0]))
     X_test.sort_indices()
     y_test = np.array(y_test)
+    print X_train.shape
+    svd = TruncatedSVD(n_components=500)
+    svd.fit(X_train)
+    X_train = svd.transform(X_train)
+    print X_train.shape
+    # pca = PCA(svd_solver='randomized')
+   # pca.fit(X_train)
+   # X_train = pca.transform(X_train)
     bdc= X_train,y_train,X_test,y_test
     joblib.dump(bdc, name_bag)
