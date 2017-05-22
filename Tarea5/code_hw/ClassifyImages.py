@@ -62,8 +62,11 @@ def construct_vocabulary_sift(inputpath, number_of_iterations,name_vocabulary,pc
     #return mkm
 
 
-def generate_bag_of_features(inputpath, mkm_name,name_bag):
+def generate_bag_of_features(inputpath, mkm_name,name_bag,pca_sift_flag,name_pca_sift):
     mkm = joblib.load(mkm_name)
+    if pca_sift_flag == True:
+        pca_sift = joblib.load(name_pca_sift)
+        print "Load ... pca_sift"
     with ZipFile(inputpath) as imagedb:
         JA_train = []
         A_train = []
@@ -78,6 +81,7 @@ def generate_bag_of_features(inputpath, mkm_name,name_bag):
             if filename.endswith('.npy'):
                 with io.BufferedReader(imagedb.open(entry)) as file:
                     sift = np.load(file)
+                    sift = pca_sift.transform(sift)
                     bof = Counter(np.sort(mkm.predict(sift)))
                     restpath,label= os.path.split(os.path.dirname(filedir))
                     if entry.filename.startswith('data_tarea/train/'):
