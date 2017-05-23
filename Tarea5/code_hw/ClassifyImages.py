@@ -64,7 +64,8 @@ def construct_vocabulary_sift(inputpath, number_of_iterations,name_vocabulary,pc
     #return mkm
 
 
-def generate_bag_of_features(inputpath, mkm_name,name_bag,pca_sift_flag,name_pca_sift):
+    
+def generate_bag_of_features(inputpath, mkm_name,name_bag,pca_sift_flag,name_pca_sift,flag_apply_pca_histogram):
     mkm = joblib.load(mkm_name)
     if pca_sift_flag == True:
         pca_sift = joblib.load(name_pca_sift)
@@ -83,7 +84,8 @@ def generate_bag_of_features(inputpath, mkm_name,name_bag,pca_sift_flag,name_pca
             if filename.endswith('.npy'):
                 with io.BufferedReader(imagedb.open(entry)) as file:
                     sift = np.load(file)
-                    sift = pca_sift.transform(sift)
+                    if pca_sift_flag == True:
+                        sift = pca_sift.transform(sift)
                     bof = Counter(np.sort(mkm.predict(sift)))
                     restpath,label= os.path.split(os.path.dirname(filedir))
                     if entry.filename.startswith('data_tarea/train/'):
@@ -113,13 +115,11 @@ def generate_bag_of_features(inputpath, mkm_name,name_bag,pca_sift_flag,name_pca
                            shape=(len(IA_test) - 1, mkm.cluster_centers_.shape[0]))
     X_test.sort_indices()
     y_test = np.array(y_test)
-    print X_train.shape
-    svd = TruncatedSVD(n_components=500)
-    svd.fit(X_train)
-    X_train = svd.transform(X_train)
-    print X_train.shape
-    # pca = PCA(svd_solver='randomized')
-   # pca.fit(X_train)
-   # X_train = pca.transform(X_train)
+    if flag_apply_pca_histogram==True:
+        svd = TruncatedSVD(n_components=500)
+        svd.fit(X_train)
+        X_train = svd.transform(X_train)
+        X_test = svd.transform(X_test)
+        print "Applied SVD to Histograms"
     bdc= X_train,y_train,X_test,y_test
     joblib.dump(bdc, name_bag)
